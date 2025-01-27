@@ -3,57 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malosha App</title>
+    <title>MALOSHA INVESTMENT </title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <style>
-        /* Hapa ni sehemu ya CSS */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        :root {
+            --primary: #28a745;
+            --secondary: #ff5733;
+            --accent: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #20c997;
+            --danger: #e63946;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light), var(--accent));
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--dark);
         }
 
         .container {
-            width: 80%;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
         }
 
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #4CAF50;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--secondary);
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid var(--dark);
+            border-radius: 5px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--success);
+        }
+
+        .alert {
+            color: var(--danger);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .chart-container {
+            margin-top: 2rem;
+            background: var(--light);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .history {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .history h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .history ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .history li {
+            background: var(--accent);
+            color: var(--light);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
             cursor: pointer;
         }
 
-        .button:hover {
-            background-color: #45a049;
+        .history li:hover {
+            background: var(--primary);
+        }
+
+        .history .delete-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .history .delete-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .history .edit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .history .edit-btn:hover {
+            background-color: var(--success);
         }
     </style>
 </head>
 <body>
+    <h1>MALOSHA INVESTMENT </h1>
+    
     <div class="container">
-        <h1>Malosha Poll</h1>
-        <button class="button" id="voteBtn">Piga Kura</button>
-        <p id="result" style="text-align: center; font-size: 18px; color: #333;"></p>
+        <div class="grid">
+            <div class="card">
+                <h2 style="color: var(--primary);">Income (mauzo)</h2>
+                <input type="number" id="sales" placeholder="Enter Sales Amount (TZS)" value="">
+            </div>
+            <div class="card">
+                <h2 style="color: var(--danger);">Expenses (Matumizi)</h2>
+                <label for="debt">Debts(madeni)</label>
+                <input type="number" id="debt" placeholder="Enter Debts Amount (TZS)" value="">
+                
+                <label for="totalPrice">Total Price(walanguzi)</label>
+                <input type="number" id="totalPrice" placeholder="Enter Total Price (TZS)" value="">
+                
+                <label for="needs">Needs(matumizi ya nyumbani)</label>
+                <input type="number" id="needs" placeholder="Enter Needs Amount (TZS)" value="">
+                
+                <label for="loss">Loss(hasara za nyogeza)</label>
+                <input type="number" id="loss" placeholder="Enter Loss Amount (TZS)" value="">
+
+                <!-- Added the new field for daily load -->
+                <label for="dailyLoad">Daily Load:</label>
+                <input type="number" id="dailyLoad" placeholder="Enter Daily Load (TZS)" value="">
+            </div>
+        </div>
+
+        <button onclick="calculate()">Calculate and Show</button>
+        <button onclick="saveHistory()">Save History</button>
+
+        <div class="alert" id="alertBox"></div>
+
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="history">
+            <h3>Income and Expense History</h3>
+            <ul id="historyList"></ul>
+        </div>
     </div>
 
     <script>
-        // Hapa ni sehemu ya JavaScript
-        document.getElementById("voteBtn").addEventListener("click", function() {
-            document.getElementById("result").textContent = "Asante kwa kupiga kura!";
-        });
+        const data = {
+            labels: ['Debts', 'Total Price', 'Needs', 'Loss'],
+            datasets: [{
+                label: 'Expenses',
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(231, 76, 60, 0.8)', 
+                    'rgba(46, 204, 113, 0.8)', 
+                    'rgba(52, 152, 219, 0.8)', 
+                    'rgba(241, 196, 15, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(231, 76, 60, 1)', 
+                    'rgba(46, 204, 113, 1)', 
+                    'rgba(52, 152, 219, 1)', 
+                    'rgba(241, 196, 15, 1)'
+                ],
+                borderWidth: 2
+            }]
+        };
+
+        const config = {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        font: {
+                            size: 14,
+                        },
+                        formatter: (value, context) => {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${percentage}%`;
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        };
+
+        const myChart = new Chart(document.getElementById('myChart'), config);
+
+        function calculate() {
+            const sales = Number(document.getElementById('sales').value) || 0;
+            const debt = Number(document.getElementById('debt').value) || 0;
+            const totalPrice = Number(document.getElementById('totalPrice').value) || 0;
+            const needs = Number(document.getElementById('needs').value) || 0;
+            const loss = Number(document.getElementById('loss').value) || 0;
+            const dailyLoad = Number(document.getElementById('dailyLoad').value) || 0;
+
+            myChart.data.datasets[0].data = [debt, totalPrice, needs, loss];
+            myChart.update();
+
+            const totalExpenses = debt + totalPrice + needs + loss;
+            
+            // Check if total expenses exceed income
+            if (totalExpenses > sales) {
+                document.getElementById('alertBox').textContent = "WARNING: Your expenses exceed your income!";
+                document.getElementById('alertBox').style.color = "red";
+            } else {
+                document.getElementById('alertBox').textContent = "";
+            }
+        }
+
+        function saveHistory() {
+            const sales = Number(document.getElementById('sales').value) || 0;
+            const debt = Number(document.getElementById('debt').value) || 0;
+            const totalPrice = Number(document.getElementById('totalPrice').value) || 0;
+            const needs = Number(document.getElementById('needs').value) || 0;
+            const loss = Number(document.getElementById('loss').value) || 0;
+            const dailyLoad = Number(document.getElementById('dailyLoad').value) || 0;
+
+            // Calculate percentages for income and expenses
+            const totalExpenses = debt + totalPrice + needs + loss;
+            const incomePercentage = ((sales / (sales + totalExpenses)) * 100).toFixed(1);
+            const expensesPercentage = 100 - incomePercentage;
+
+            const record = {
+                sales,
+                debt,
+                totalPrice,
+                needs,
+                loss,
+                dailyLoad, // Save daily load
+                incomePercentage,
+                expensesPercentage,
+                date: new Date().toLocaleString()
+            };
+
+            let history = JSON.parse(localStorage.getItem('history')) || [];
+            history.push(record);
+            localStorage.setItem('history', JSON.stringify(history));
+
+            showHistory();
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('history')) || [];
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+
+            history.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div>
+                        <strong>Date:</strong> ${item.date}<br>
+                        <strong>Income:</strong> ${item.sales} TZS (Income %: ${item.incomePercentage}%)<br>
+                        <strong>Debts:</strong> ${item.debt} TZS<br>
+                        <strong>Total Price:</strong> ${item.totalPrice} TZS<br>
+                        <strong>Needs:</strong> ${item.needs} TZS<br>
+                        <strong>Loss:</strong> ${item.loss} TZS<br>
+                        <strong>Daily Load:</strong> ${item.dailyLoad} TZS<br> <!-- Show daily load -->
+                        <strong>Expenses %:</strong> ${item.expensesPercentage}%
+                    </div>
+                    <button class="edit-btn" onclick="editHistory(${index})">Edit</button>
+                    <button class="delete-btn" onclick="deleteHistory(${index})">Delete</button>
+                `;
+                historyList.appendChild(li);
+            });
+        }
+
+        function editHistory(index) {
+            const history = JSON.parse(localStorage.getItem('history')) || [];
+            const item = history[index];
+
+            document.getElementById('sales').value = item.sales;
+            document.getElementById('debt').value = item.debt;
+            document.getElementById('totalPrice').value = item.totalPrice;
+            document.getElementById('needs').value = item.needs;
+            document.getElementById('loss').value = item.loss;
+            document.getElementById('dailyLoad').value = item.dailyLoad; // Populate daily load
+
+            // Remove the original record before saving the updated one
+            history.splice(index, 1);
+            localStorage.setItem('history', JSON.stringify(history));
+
+            showHistory();
+        }
+
+        function deleteHistory(index) {
+            let history = JSON.parse(localStorage.getItem('history')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('history', JSON.stringify(history));
+
+            showHistory();
+        }
+
+        // Show history on page load
+        window.onload = showHistory;
     </script>
 </body>
-</html>   
+</html>
