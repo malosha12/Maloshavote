@@ -21,14 +21,13 @@
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             margin: auto;
-            background-color: #ffffff;
         }
 
         h2, h3 {
             color: #333;
         }
 
-        form input, form button, .show-all {
+        form input, form button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -42,31 +41,6 @@
             color: white;
             font-size: 16px;
             border: none;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        form button:hover {
-            background: #218838;
-            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .show-all {
-            background: #007bff;
-            color: white;
-            font-size: 16px;
-            border: none;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .show-all:hover {
-            background: #0056b3;
-            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .hidden {
-            display: none;
         }
 
         table {
@@ -89,64 +63,45 @@
             color: white;
         }
 
-        .edit-button, .delete-button {
-            padding: 5px 10px;
-            background-color: #ffc107;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .edit-button:hover, .delete-button:hover {
-            background-color: #e0a800;
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-        }
-
-        .delete-button:hover {
-            background-color: #c82333;
-        }
-
-        /* CSS Animation for Status */
         .status {
             font-weight: bold;
             padding: 5px;
             border-radius: 5px;
-            animation: statusAnimation 15s infinite;
-        }
-
-        @keyframes statusAnimation {
-            0% { background-color: #FF6347; } /* Red */
-            14% { background-color: #FF4500; }
-            28% { background-color: #FFD700; }
-            42% { background-color: #32CD32; }
-            57% { background-color: #00BFFF; }
-            71% { background-color: #9370DB; }
-            85% { background-color: #FF1493; }
-            100% { background-color: #FF6347; }
         }
 
         .status.due {
-            animation: none;
-            background-color: #FF6347; /* Fixed Red for overdue status */
+            background-color: #FF6347;
+            color: white;
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { background-color: #FF6347; color: white; }
+            100% { background-color: white; color: red; }
+        }
+
+        .pay-button {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Kuchangisha Hela ya Umeme</h2>
+        <h2>DAVID LUKU COLLECTION </h2> by malosha
 
         <form id="addTenantForm">
             <input type="text" id="tenantName" placeholder="Jina la Mpangaji" required>
             <input type="number" id="amountPaid" placeholder="Kiasi alichotoa" required>
-            <input type="date" id="paymentDate" placeholder="Tarehe ya Malipo" required>
-            <button type="submit">Ongeza Mpangaji</button>
+            <input type="date" id="paymentDate" required>
+            <button type="submit" id="submitButton">HIFADHI JINA</button>
         </form>
 
-        <h3>Wapangaji Waliochangia</h3>
+        <h3>MAJINA YA WAPANGAJI NA TARIFA ZAO </h3>
         <table>
             <thead>
                 <tr>
@@ -160,34 +115,14 @@
             <tbody id="tenantList"></tbody>
         </table>
 
-        <h3>Jumla ya Pesa: <span id="totalAmount">0</span> TZS</h3>
-
-        <!-- Button ya "Ona Majina Yote" sasa iko chini -->
-        <form id="addNameForm">
-            <input type="text" id="newTenantName" placeholder="Ongeza Jina la Mpangaji" required>
-            <button type="submit">Ongeza Jina</button>
-        </form>
-
-        <button class="show-all" onclick="toggleAllTenants()">Ona Majina Yote</button>
-
-        <div id="allTenantsList" class="hidden">
-            <h3>Majina Yote ya Wapangaji</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Jina la Mpangaji</th>
-                    </tr>
-                </thead>
-                <tbody id="allTenantsTable"></tbody>
-            </table>
-        </div>
+        <h3>JUMLA KUU: <span id="totalAmount">0</span> TZS</h3>
     </div>
 
     <script>
+        let editIndex = null;
+
         document.addEventListener("DOMContentLoaded", function() {
             loadTenants();
-            loadAllTenantNames();
         });
 
         document.getElementById("addTenantForm").addEventListener("submit", function(e) {
@@ -196,68 +131,53 @@
             let tenantName = document.getElementById("tenantName").value.trim();
             let amountPaid = document.getElementById("amountPaid").value.trim();
             let paymentDate = document.getElementById("paymentDate").value.trim();
-            
-            if (tenantName === "" || amountPaid === "" || paymentDate === "") return;
+
+            if (!tenantName || !amountPaid || !paymentDate) return;
 
             let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
-            let newTenant = {
-                name: tenantName,
-                amount: parseFloat(amountPaid),
-                date: paymentDate
-            };
 
-            tenants.push(newTenant);
+            if (editIndex !== null) {
+                tenants[editIndex] = { name: tenants[editIndex].name, amount: parseFloat(amountPaid), date: paymentDate };
+                editIndex = null;
+                document.getElementById("submitButton").textContent = "HIFADHI JINA";
+            } else {
+                tenants.push({ name: tenantName, amount: parseFloat(amountPaid), date: paymentDate });
+            }
+
             localStorage.setItem("tenants", JSON.stringify(tenants));
-
-            document.getElementById("tenantName").value = "";
-            document.getElementById("amountPaid").value = "";
-            document.getElementById("paymentDate").value = "";
-
+            document.getElementById("addTenantForm").reset();
             loadTenants();
-            removeNameFromAllList(tenantName);  // Kuondoa jina kutoka kwenye orodha ya majina yote
-        });
-
-        document.getElementById("addNameForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-
-            let newTenantName = document.getElementById("newTenantName").value.trim();
-            if (newTenantName === "") return;
-
-            let allTenantNames = JSON.parse(localStorage.getItem("allTenantNames")) || [];
-            allTenantNames.push(newTenantName);
-            localStorage.setItem("allTenantNames", JSON.stringify(allTenantNames));
-
-            document.getElementById("newTenantName").value = "";
-
-            loadAllTenantNames();
         });
 
         function loadTenants() {
             let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
             let totalAmount = 0;
             let tenantList = document.getElementById("tenantList");
-
             tenantList.innerHTML = "";
 
             let today = new Date();
             tenants.forEach((tenant, index) => {
                 let paymentDate = new Date(tenant.date);
+                let nextPaymentDate = new Date(paymentDate);
+                nextPaymentDate.setDate(nextPaymentDate.getDate() + 7);
+
                 let daysPassed = Math.floor((today - paymentDate) / (1000 * 60 * 60 * 24));
-                let daysLeft = 7 - daysPassed;
-                let status = daysPassed >= 7 ? "ANADAIWA" : `Bado siku ${daysLeft}`;
+                let isDue = daysPassed >= 7;
+
+                let statusText = isDue ? 
+                    `ANADAIWA (Alitakiwa kulipa: ${nextPaymentDate.toLocaleDateString()})` : 
+                    `Bado siku ${7 - daysPassed} (Malipo yafuatayo: ${nextPaymentDate.toLocaleDateString()})`;
 
                 totalAmount += tenant.amount;
 
                 let tenantRow = document.createElement("tr");
-
                 tenantRow.innerHTML = `
                     <td>${tenant.name}</td>
                     <td>${tenant.amount}</td>
-                    <td>${new Date(tenant.date).toLocaleDateString()}</td>
-                    <td class="status ${daysPassed >= 7 ? 'due' : ''}">${status}</td>
+                    <td>${paymentDate.toLocaleDateString()}</td>
+                    <td class="status ${isDue ? 'due' : ''}">${statusText}</td>
                     <td>
-                        <button class="edit-button" onclick="editTenant(${index})">Hariri</button>
-                        <button class="delete-button" onclick="deleteTenant(${index})">Futa</button>
+                        <button class="pay-button" onclick="editPayment(${index})">Lipa</button>
                     </td>
                 `;
                 tenantList.appendChild(tenantRow);
@@ -266,62 +186,16 @@
             document.getElementById("totalAmount").textContent = totalAmount;
         }
 
-        function loadAllTenantNames() {
-            let allTenantNames = JSON.parse(localStorage.getItem("allTenantNames")) || [];
-            let allTenantsTable = document.getElementById("allTenantsTable");
-
-            allTenantsTable.innerHTML = "";
-
-            allTenantNames.forEach((tenant, index) => {
-                let tenantRow = document.createElement("tr");
-                tenantRow.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${tenant}</td>
-                `;
-                allTenantsTable.appendChild(tenantRow);
-            });
-        }
-
-        function toggleAllTenants() {
-            let listDiv = document.getElementById("allTenantsList");
-            listDiv.classList.toggle("hidden");
-        }
-
-        function removeNameFromAllList(name) {
-            let allTenantNames = JSON.parse(localStorage.getItem("allTenantNames")) || [];
-            allTenantNames = allTenantNames.filter(tenant => tenant !== name);  // Ondoa jina la mpangaji
-
-            localStorage.setItem("allTenantNames", JSON.stringify(allTenantNames));
-            loadAllTenantNames();
-        }
-
-        function editTenant(index) {
+        function editPayment(index) {
             let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
             let tenant = tenants[index];
-            
-            let newName = prompt("Ingiza jina jipya:", tenant.name);
-            let newAmount = prompt("Ingiza kiasi kipya:", tenant.amount);
-            let newDate = prompt("Ingiza tarehe mpya:", tenant.date);
 
-            if (newName && newAmount && newDate) {
-                tenant.name = newName;
-                tenant.amount = parseFloat(newAmount);
-                tenant.date = newDate;
+            document.getElementById("tenantName").value = tenant.name;
+            document.getElementById("amountPaid").value = tenant.amount;
+            document.getElementById("paymentDate").value = new Date().toISOString().split("T")[0];
 
-                tenants[index] = tenant;
-                localStorage.setItem("tenants", JSON.stringify(tenants));
-
-                loadTenants();
-            }
-        }
-
-        function deleteTenant(index) {
-            let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
-            tenants.splice(index, 1);
-
-            localStorage.setItem("tenants", JSON.stringify(tenants));
-
-            loadTenants();
+            editIndex = index;
+            document.getElementById("submitButton").textContent = "Hifadhi Malipo";
         }
     </script>
 </body>
