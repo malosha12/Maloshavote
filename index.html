@@ -3,199 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuchangisha Hela ya Umeme</title>
+    <title>Malosha Technology Group</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #f0f2f5, #d1e1f2);
-            text-align: center;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #e9ecef;
             padding: 20px;
+            line-height: 1.6;
+            color: #343a40;
         }
 
         .container {
-            width: 90%;
-            max-width: 600px;
-            background: #ffffff;
-            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e90ff, #00b4d8);
+            color: white;
+            padding: 25px;
+            text-align: center;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            margin: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
-        h2, h3 {
-            color: #333;
+        .nav {
+            background-color: #48cae4;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
 
-        form input, form button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        form button {
-            background: #28a745;
-            color: white;
-            font-size: 16px;
+        .nav button {
+            padding: 12px 25px;
             border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background-color: #0077b6;
+            color: white;
+            transition: all 0.3s ease;
         }
 
-        table {
+        .nav button:hover {
+            background-color: #023e8a;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            min-height: 450px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .ellipsis-menu {
+            position: absolute;
+            right: 40px;
+            top: 30px;
+        }
+
+        .ellipsis-btn {
+            background-color: #90e0ef;
+            color: #023e8a;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .ellipsis-btn:hover {
+            background-color: #00b4d8;
+            color: white;
+        }
+
+        .ellipsis-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 220px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1;
+            border-radius: 8px;
+        }
+
+        .ellipsis-content button {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 10px;
+            padding: 12px;
+            border: none;
+            background-color: white;
             text-align: left;
+            cursor: pointer;
+            color: #0077b6;
         }
 
-        th {
-            background: #007bff;
-            color: white;
+        .ellipsis-content button:hover {
+            background-color: #caf0f8;
+            color: #023e8a;
         }
 
-        .status {
-            font-weight: bold;
-            padding: 5px;
+        .form-section, .task-form {
+            display: none;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .form-section input, .form-section textarea, .form-section select,
+        .task-form input, .task-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #dee2e6;
             border-radius: 5px;
+            background-color: #fff;
         }
 
-        .status.due {
-            background-color: #FF6347;
+        .task-list, #katibaDisplay, #coursesList, #mafanikioList, #membersList {
+            margin-top: 20px;
+        }
+
+        .task-item, .member-item {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        button:not(.ellipsis-btn) {
+            background-color: #00b4d8;
             color: white;
-            animation: blink 1s infinite alternate;
-        }
-
-        @keyframes blink {
-            0% { background-color: #FF6347; color: white; }
-            100% { background-color: white; color: red; }
-        }
-
-        .pay-button {
-            background-color: #28a745;
-            color: white;
-            padding: 5px 10px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover:not(.ellipsis-btn) {
+            background-color: #0077b6;
+        }
+
+        h2 {
+            color: #023e8a;
+            margin-bottom: 15px;
+        }
+
+        /* Private Box Styling */
+        #private-section {
+            background: linear-gradient(135deg, #023e8a, #0077b6);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        #private-section h2 {
+            color: #caf0f8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        #privateLogin {
+            text-align: center;
+        }
+
+        #privateCode {
+            width: 300px;
+            margin: 0 auto;
+            background-color: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #privateContent {
+            margin-top: 20px;
+        }
+
+        .private-item {
+            background-color: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .private-item button {
+            background-color: #ff6b6b;
+            margin-left: 10px;
+            padding: 5px 10px;
+        }
+
+        .private-item button:hover {
+            background-color: #d00000;
+        }
+
+        #privateForm textarea {
+            background-color: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>DAVID LUKU COLLECTION </h2> by malosha
+        <div class="header">
+            <h1><i class="fas fa-code"></i> MALOSHA ACADEMY</h1>
+            <p><i class="fas fa-users"></i> Mfumo wa Usimamizi wa Timu</p>
+            <div class="ellipsis-menu">
+                <button class="ellipsis-btn" onclick="toggleEllipsis()"><i class="fas fa-ellipsis-h"></i></button>
+                <div class="ellipsis-content" id="ellipsisMenu">
+                    <button onclick="showSection('registration')"><i class="fas fa-user-plus"></i> Usajili</button>
+                    <button onclick="showSection('katiba')"><i class="fas fa-book"></i> Katiba na Sheria</button>
+                    <button onclick="showSection('courses')"><i class="fas fa-graduation-cap"></i> Course Zinazotolewa</button>
+                    <button onclick="showSection('mafanikio')"><i class="fas fa-trophy"></i> Mafanikio ya Kundi</button>
+                    <button onclick="showSection('private')"><i class="fas fa-lock"></i> Malosha Private Box</button>
+                </div>
+            </div>
+        </div>
 
-        <form id="addTenantForm">
-            <input type="text" id="tenantName" placeholder="Jina la Mpangaji" required>
-            <input type="number" id="amountPaid" placeholder="Kiasi alichotoa" required>
-            <input type="date" id="paymentDate" required>
-            <button type="submit" id="submitButton">HIFADHI JINA</button>
-        </form>
+        <div class="nav">
+            <button onclick="showSection('home')"><i class="fas fa-home"></i> Nyumbani</button>
+            <button onclick="showSection('tasks')"><i class="fas fa-tasks"></i> Majukumu</button>
+            <button onclick="showSection('members')"><i class="fas fa-users"></i> Wanachama</button>
+        </div>
 
-        <h3>MAJINA YA WAPANGAJI NA TARIFA ZAO </h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Jina</th>
-                    <th>Kiasi</th>
-                    <th>Tarehe</th>
-                    <th>Status</th>
-                    <th>Vitendo</th>
-                </tr>
-            </thead>
-            <tbody id="tenantList"></tbody>
-        </table>
+        <div class="content" id="content">
+            <!-- Home Section -->
+            <div id="home-section">
+                <h2><i class="fas fa-door-open"></i> Karibu Malosha Technology</h2>
+                <p>Hapa tunaweza kuweka taarifa za msingi za group letu na malengo yetu.</p>
+            </div>
 
-        <h3>JUMLA KUU: <span id="totalAmount">0</span> TZS</h3>
+            <!-- Tasks Section -->
+            <div id="tasks-section" style="display: none;">
+                <h2><i class="fas fa-tasks"></i> Majukumu</h2>
+                <button onclick="toggleTaskForm()"><i class="fas fa-plus"></i> Ongeza Jukumu Jipya</button>
+                <div class="task-form" id="taskForm">
+                    <input type="text" id="taskTitle" placeholder="Jina la Jukumu">
+                    <textarea id="taskDesc" placeholder="Maelezo ya Jukumu"></textarea>
+                    <input type="date" id="taskDate">
+                    <button onclick="addTask()"><i class="fas fa-save"></i> Hifadhi Jukumu</button>
+                </div>
+                <div class="task-list" id="taskList"></div>
+            </div>
+
+            <!-- Members Section -->
+            <div id="members-section" style="display: none;">
+                <h2><i class="fas fa-users"></i> Wanachama</h2>
+                <div id="membersList"></div>
+            </div>
+
+            <!-- Registration Section -->
+            <div id="registration-section" style="display: none;">
+                <h2><i class="fas fa-user-plus"></i> Usajili Mwanza</h2>
+                <div class="form-section" id="regForm">
+                    <input type="text" id="regName1" placeholder="Jina la Kwanza">
+                    <input type="text" id="regName2" placeholder="Jina la Pili">
+                    <input type="text" id="regName3" placeholder="Jina la Tatu">
+                    <input type="text" id="regRegion" placeholder="Mkoa Aliotokea">
+                    <select id="regSkill">
+                        <option value="">Chagua Ujuzi</option>
+                        <option value="anauzoefu">Anauzoefu</option>
+                        <option value="anajifunza">Anajifunza</option>
+                        <option value="anajua_kidogo">Anajua Kidogo</option>
+                    </select>
+                    <button onclick="saveRegistration()"><i class="fas fa-save"></i> Hifadhi</button>
+                </div>
+            </div>
+
+            <!-- Katiba Section -->
+            <div id="katiba-section" style="display: none;">
+                <h2><i class="fas fa-book"></i> Katiba na Sheria</h2>
+                <textarea id="katibaText" rows="10" placeholder="Andika Katiba na Sheria hapa"></textarea>
+                <button onclick="saveKatiba()"><i class="fas fa-save"></i> Hifadhi</button>
+                <div id="katibaDisplay"></div>
+            </div>
+
+            <!-- Courses Section -->
+            <div id="courses-section" style="display: none;">
+                <h2><i class="fas fa-graduation-cap"></i> Course Zinazotolewa</h2>
+                <div id="coursesList">
+                    <p><i class="fas fa-calendar-week"></i> Wiki: HTML, CSS</p>
+                    <p><i class="fas fa-calendar-alt"></i> Mwezi: JavaScript Basics</p>
+                    <p><i class="fas fa-calendar"></i> Mwaka: Web Development Full Course</p>
+                </div>
+            </div>
+
+            <!-- Mafanikio Section -->
+            <div id="mafanikio-section" style="display: none;">
+                <h2><i class="fas fa-trophy"></i> Mafanikio ya Kundi</h2>
+                <div id="mafanikioList">
+                    <p><i class="fas fa-check-circle"></i> 1. Juma - Amejifunza HTML (2025)</p>
+                    <p><i class="fas fa-check-circle"></i> 2. Aisha - Amejifunza CSS (2025)</p>
+                </div>
+            </div>
+
+            <!-- Private Box Section -->
+            <div id="private-section" style="display: none;">
+                <h2><i class="fas fa-lock"></i> Malosha Private Box</h2>
+                <div id="privateLogin" style="display: block;">
+                    <input type="password" id="privateCode" placeholder="Ingiza Neno la Siri">
+                    <button onclick="verifyPrivate()"><i class="fas fa-unlock"></i> Ingia</button>
+                </div>
+                <div id="privateContent" style="display: none;">
+                    <div class="form-section" id="privateForm">
+                        <textarea id="privateText" rows="4" placeholder="Andika Maudhui ya Siri Hapa"></textarea>
+                        <button onclick="addPrivateItem()"><i class="fas fa-plus"></i> Ongeza</button>
+                    </div>
+                    <div id="privateItems"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        let editIndex = null;
+        let privateItems = []; // Array ya kuhifadhi items za private box
 
-        document.addEventListener("DOMContentLoaded", function() {
-            loadTenants();
-        });
-
-        document.getElementById("addTenantForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            
-            let tenantName = document.getElementById("tenantName").value.trim();
-            let amountPaid = document.getElementById("amountPaid").value.trim();
-            let paymentDate = document.getElementById("paymentDate").value.trim();
-
-            if (!tenantName || !amountPaid || !paymentDate) return;
-
-            let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
-
-            if (editIndex !== null) {
-                tenants[editIndex] = { name: tenants[editIndex].name, amount: parseFloat(amountPaid), date: paymentDate };
-                editIndex = null;
-                document.getElementById("submitButton").textContent = "HIFADHI JINA";
-            } else {
-                tenants.push({ name: tenantName, amount: parseFloat(amountPaid), date: paymentDate });
-            }
-
-            localStorage.setItem("tenants", JSON.stringify(tenants));
-            document.getElementById("addTenantForm").reset();
-            loadTenants();
-        });
-
-        function loadTenants() {
-            let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
-            let totalAmount = 0;
-            let tenantList = document.getElementById("tenantList");
-            tenantList.innerHTML = "";
-
-            let today = new Date();
-            tenants.forEach((tenant, index) => {
-                let paymentDate = new Date(tenant.date);
-                let nextPaymentDate = new Date(paymentDate);
-                nextPaymentDate.setDate(nextPaymentDate.getDate() + 7);
-
-                let daysPassed = Math.floor((today - paymentDate) / (1000 * 60 * 60 * 24));
-                let isDue = daysPassed >= 7;
-
-                let statusText = isDue ? 
-                    `ANADAIWA (Alitakiwa kulipa: ${nextPaymentDate.toLocaleDateString()})` : 
-                    `Bado siku ${7 - daysPassed} (Malipo yafuatayo: ${nextPaymentDate.toLocaleDateString()})`;
-
-                totalAmount += tenant.amount;
-
-                let tenantRow = document.createElement("tr");
-                tenantRow.innerHTML = `
-                    <td>${tenant.name}</td>
-                    <td>${tenant.amount}</td>
-                    <td>${paymentDate.toLocaleDateString()}</td>
-                    <td class="status ${isDue ? 'due' : ''}">${statusText}</td>
-                    <td>
-                        <button class="pay-button" onclick="editPayment(${index})">Lipa</button>
-                    </td>
-                `;
-                tenantList.appendChild(tenantRow);
-            });
-
-            document.getElementById("totalAmount").textContent = totalAmount;
+        function toggleEllipsis() {
+            const menu = document.getElementById('ellipsisMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        function editPayment(index) {
-            let tenants = JSON.parse(localStorage.getItem("tenants")) || [];
-            let tenant = tenants[index];
+        function showSection(section) {
+            const sections = ['home', 'tasks', 'members', 'registration', 'katiba', 'courses', 'mafanikio', 'private'];
+            sections.forEach(s => {
+                document.getElementById(s + '-section').style.display = 'none';
+            });
+            document.getElementById(section + '-section').style.display = 'block';
+            document.getElementById('ellipsisMenu').style.display = 'none';
 
-            document.getElementById("tenantName").value = tenant.name;
-            document.getElementById("amountPaid").value = tenant.amount;
-            document.getElementById("paymentDate").value = new Date().toISOString().split("T")[0];
+            if (section === 'registration') {
+                document.getElementById('regForm').style.display = 'block';
+            }
+            if (section === 'private') {
+                document.getElementById('privateLogin').style.display = 'block';
+                document.getElementById('privateContent').style.display = 'none';
+                document.getElementById('privateCode').value = '';
+            }
+        }
 
-            editIndex = index;
-            document.getElementById("submitButton").textContent = "Hifadhi Malipo";
+        function toggleTaskForm() {
+            const form = document.getElementById('taskForm');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function addTask() {
+            const title = document.getElementById('taskTitle').value;
+            const desc = document.getElementById('taskDesc').value;
+            const date = document.getElementById('taskDate').value;
+
+            if (title && desc && date) {
+                const taskList = document.getElementById('taskList');
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task-item';
+                taskDiv.innerHTML = `
+                    <h3><i class="fas fa-tasks"></i> ${title}</h3>
+                    <p>${desc}</p>
+                    <small><i class="fas fa-calendar-day"></i> Muda: ${date}</small>
+                `;
+                taskList.appendChild(taskDiv);
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDesc').value = '';
+                document.getElementById('taskDate').value = '';
+                toggleTaskForm();
+            } else {
+                alert('Tafadhali jaza maelezo yote!');
+            }
+        }
+
+        function saveRegistration() {
+            const name1 = document.getElementById('regName1').value;
+            const name2 = document.getElementById('regName2').value;
+            const name3 = document.getElementById('regName3').value;
+            const region = document.getElementById('regRegion').value;
+            const skill = document.getElementById('regSkill').value;
+
+            if (name1 && name2 && name3 && region && skill) {
+                const membersList = document.getElementById('membersList');
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'member-item';
+                memberDiv.innerHTML = `
+                    <p><i class="fas fa-user"></i> Jina: ${name1} ${name2} ${name3}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Mkoa: ${region}</p>
+                    <p><i class="fas fa-tools"></i> Ujuzi: ${skill}</p>
+                `;
+                membersList.appendChild(memberDiv);
+
+                document.getElementById('regName1').value = '';
+                document.getElementById('regName2').value = '';
+                document.getElementById('regName3').value = '';
+                document.getElementById('regRegion').value = '';
+                document.getElementById('regSkill').value = '';
+                showSection('home');
+            } else {
+                alert('Tafadhali jaza maelezo yote!');
+            }
+        }
+
+        function saveKatiba() {
+            const katiba = document.getElementById('katibaText').value;
+            if (katiba) {
+                document.getElementById('katibaDisplay').innerHTML = `<pre><i class="fas fa-book-open"></i> ${katiba}</pre>`;
+                document.getElementById('katibaText').value = '';
+            }
+        }
+
+        function verifyPrivate() {
+            const code = document.getElementById('privateCode').value;
+            if (code === '1340') {
+                document.getElementById('privateLogin').style.display = 'none';
+                document.getElementById('privateContent').style.display = 'block';
+                document.getElementById('privateCode').value = ''; // Safisha password
+                displayPrivateItems();
+            } else {
+                alert('Neno la Siri sio Sahihi!');
+                document.getElementById('privateCode').value = ''; // Safisha password hata ikifeli
+            }
+        }
+
+        function addPrivateItem() {
+            const text = document.getElementById('privateText').value;
+            if (text) {
+                privateItems.push(text);
+                document.getElementById('privateText').value = '';
+                displayPrivateItems();
+            } else {
+                alert('Tafadhali andika kitu!');
+            }
+        }
+
+        function editPrivateItem(index) {
+            const newText = prompt('Hariri Maudhui:', privateItems[index]);
+            if (newText !== null && newText.trim() !== '') {
+                privateItems[index] = newText;
+                displayPrivateItems();
+            }
+        }
+
+        function deletePrivateItem(index) {
+            if (confirm('Je, una uhakika unataka kufuta hii?')) {
+                privateItems.splice(index, 1);
+                displayPrivateItems();
+            }
+        }
+
+        function displayPrivateItems() {
+            const privateItemsDiv = document.getElementById('privateItems');
+            privateItemsDiv.innerHTML = '';
+            privateItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'private-item';
+                itemDiv.innerHTML = `
+                    <span><i class="fas fa-star"></i> ${item}</span>
+                    <div>
+                        <button onclick="editPrivateItem(${index})"><i class="fas fa-edit"></i> Hariri</button>
+                        <button onclick="deletePrivateItem(${index})"><i class="fas fa-trash"></i> Futa</button>
+                    </div>
+                `;
+                privateItemsDiv.appendChild(itemDiv);
+            });
         }
     </script>
 </body>
